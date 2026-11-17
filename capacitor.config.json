@@ -1,7 +1,0 @@
-{
-  "appId": "com.bloomhaven.game",
-  "appName": "Bloom Haven",
-  "webDir": "www",
-  "backgroundColor": "#cfeeff",
-  "android": { "allowMixedContent": false }
-}
