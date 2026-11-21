@@ -1,4 +1,3 @@
-
 name: Build Android APK
 on:
   push:
@@ -19,6 +18,20 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+      - name: Allow music to autoplay
+        run: |
+          F=$(find android/app/src/main/java -name MainActivity.java | head -1)
+          PKG=$(grep -m1 '^package' "$F" | sed 's/package //;s/;//')
+          cat > "$F" <<EOF
+          package $PKG;
+          import com.getcapacitor.BridgeActivity;
+          public class MainActivity extends BridgeActivity {
+            @Override public void onStart() {
+              super.onStart();
+              try { getBridge().getWebView().getSettings().setMediaPlaybackRequiresUserGesture(false); } catch (Exception e) {}
+            }
+          }
+          EOF
       - name: Portrait lock + fullscreen
         run: |
           sed -i 's|<activity|<activity android:screenOrientation="portrait"|' android/app/src/main/AndroidManifest.xml
@@ -33,4 +46,3 @@ jobs:
         with:
           name: BloomHaven-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
- 
